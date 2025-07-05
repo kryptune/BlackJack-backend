@@ -1,12 +1,14 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+import os
 
 app = Flask(__name__)
 CORS(app)  # Allow frontend to connect
 
-# Use SQLite for demo
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blackjack.db'
+# Use /tmp for SQLite in production
+db_path = os.environ.get('DATABASE_URL') or 'sqlite:////tmp/blackjack.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = db_path
 db = SQLAlchemy(app)
 
 # Database Model
