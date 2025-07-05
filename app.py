@@ -53,32 +53,24 @@ def update_balance(username):
     return jsonify({'error': 'Player not found'}), 404
 
 @app.route('/player/<username>/update_winloss', methods=['POST'])
-def update_win():
-    # Get JSON data from the request (like: { "username": "rolando", "win": true })
+def update_win(username):
     data = request.json
-
-    # Extract 'username' and 'win' values from the JSON
-    username = data.get('username')
     win = data.get('win', False)
 
-    # Find the player in the database using the username
     player = Player.query.filter_by(username=username).first()
 
     if player:
-        # If win is True, increase wins; otherwise, increase losses
         if win:
             player.wins += 1
         else:
             player.losses += 1
 
-        # Save the change in the database
         db.session.commit()
 
-        # Send back the updated win/loss count
         return jsonify({'wins': player.wins, 'losses': player.losses})
     
-    # If player is not found, return an error
     return jsonify({'error': 'Player not found'}), 404
+
 
 
 if __name__ == '__main__':
