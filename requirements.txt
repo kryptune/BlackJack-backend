@@ -3,3 +3,4 @@ flask-cors==6.0.1
 Flask-SQLAlchemy==3.1.1
 Flask==3.0.3
 SQLAlchemy==2.0.34
+psycopg2-binary
