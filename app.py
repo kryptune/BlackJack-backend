@@ -52,7 +52,7 @@ def update_balance(username):
         return jsonify({'balance': player.balance})
     return jsonify({'error': 'Player not found'}), 404
 
-@app.route('/update_winloss', methods=['POST'])
+@app.route('/player/<username>/update_winloss', methods=['POST'])
 def update_win():
     # Get JSON data from the request (like: { "username": "rolando", "win": true })
     data = request.json
