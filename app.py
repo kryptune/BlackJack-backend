@@ -6,11 +6,13 @@ import os
 app = Flask(__name__)
 CORS(app)  # Allow frontend to connect
 
-# Use /tmp for SQLite in production
-db_path = os.environ.get('DATABASE_URL') or 'sqlite:////tmp/blackjack.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = db_path
-db = SQLAlchemy(app)
+# Auto-convert postgres:// to postgresql:// for SQLAlchemy compatibility
+uri = os.environ.get("DATABASE_URL", "sqlite:///blackjack.db")
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
+app.config['SQLALCHEMY_DATABASE_URI'] = uri
 
+db = SQLAlchemy(app)
 # Database Model
 class Player(db.Model):
     id = db.Column(db.Integer, primary_key=True)
