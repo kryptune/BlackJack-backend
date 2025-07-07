@@ -6,7 +6,8 @@ from werkzeug.security import generate_password_hash
 import os
 
 app = Flask(__name__)
-CORS(app)  # Allow frontend to connect
+CORS(app, origins=["https://blckjck2.netlify.app"])
+
 
 # Auto-convert postgres:// to postgresql:// for SQLAlchemy compatibility
 uri = os.environ.get("DATABASE_URL", "sqlite:///blackjack.db")
