@@ -19,7 +19,7 @@ db = SQLAlchemy(app)
 class Player(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(120), nullable=False)
+    password_hash = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     balance = db.Column(db.Integer, default=1000)
     wins = db.Column(db.Integer, default=0)
@@ -106,7 +106,7 @@ def register():
     hashed_password = generate_password_hash(password)
 
     # Create new user
-    new_user = Player(username=username, password=hashed_password, email=email)
+    new_user = Player(username=username, password_hash=hashed_password, email=email)
     db.session.add(new_user)
     db.session.commit()
 
