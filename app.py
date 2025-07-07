@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from werkzeug.security import check_password_hash
+from werkzeug.security import generate_password_hash
 import os
 
 app = Flask(__name__)
@@ -17,6 +19,8 @@ db = SQLAlchemy(app)
 class Player(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(120), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
     balance = db.Column(db.Integer, default=1000)
     wins = db.Column(db.Integer, default=0)
     losses = db.Column(db.Integer, default=0)
@@ -35,6 +39,7 @@ def get_player(username):
         db.session.commit()
     return jsonify({
         'username': player.username,
+        'email': player.email,
         'balance': player.balance,
         'wins': player.wins,
         'losses': player.losses
@@ -70,6 +75,42 @@ def update_win(username):
         return jsonify({'wins': player.wins, 'losses': player.losses})
     
     return jsonify({'error': 'Player not found'}), 404
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+
+    player = Player.query.filter_by(username=username).first()
+    if player and check_password_hash(player.password_hash, password):
+        return jsonify({"status": "success", "username": username})
+    else:
+        return jsonify({"status": "error", "message": "Invalid credentials"}), 401
+
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+    email = data.get('email')
+
+    if not username or not password or not email:
+        return jsonify({"status": "error", "message": "Missing fields"}), 400
+
+    existing_user = Player.query.filter_by(username=username).first()
+    if existing_user:
+        return jsonify({"status": "error", "message": "Username already exists"}), 400
+
+    # Hash the password before saving
+    hashed_password = generate_password_hash(password)
+
+    # Create new user
+    new_user = Player(username=username, password=hashed_password, email=email)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({"status": "success", "username": username})
 
 
 
