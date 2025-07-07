@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash
 import os
 
 app = Flask(__name__)
-CORS(app, origins=["https://blckjck2.netlify.app"])
+CORS(app, resources={r"/*": {"origins": ["https://blckjck2.netlify.app"]}})
 
 
 # Auto-convert postgres:// to postgresql:// for SQLAlchemy compatibility
