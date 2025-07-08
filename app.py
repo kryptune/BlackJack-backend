@@ -7,7 +7,9 @@ import os
 from datetime import datetime
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "https://blckjck2.netlify.app"}}, supports_credentials=True)
+
+CORS(app, origins="https://blckjck2.netlify.app", methods=["GET", "POST", "OPTIONS"], allow_headers="*", supports_credentials=True)
+
 
 
 # Auto-convert postgres:// to postgresql:// for SQLAlchemy compatibility
