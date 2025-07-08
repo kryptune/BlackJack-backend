@@ -7,7 +7,7 @@ import os
 from datetime import datetime
 
 app = Flask(__name__)
-CORS(app, origins=["https://blckjck2.netlify.app"], supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": "https://blckjck2.netlify.app"}}, supports_credentials=True)
 
 
 # Auto-convert postgres:// to postgresql:// for SQLAlchemy compatibility
@@ -81,6 +81,9 @@ def update_win(username):
 
 @app.route('/login', methods=['POST', 'OPTIONS'])
 def login():
+    if request.method == 'OPTIONS':
+        return '', 204
+    
     data = request.json
     username = data.get('username')
     password = data.get('password')
@@ -118,7 +121,11 @@ def register():
 
     return jsonify({"status": "success", "username": username})
 
-
+@app.route("/cors-test", methods=["GET", "OPTIONS"])
+def cors_test():
+    if request.method == "OPTIONS":
+        return '', 204
+    return jsonify({"message": "CORS is working!"})
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
