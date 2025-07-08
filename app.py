@@ -7,7 +7,7 @@ import os
 from datetime import datetime
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["https://blckjck2.netlify.app"]}})
+CORS(app, origins=["https://blckjck2.netlify.app"], supports_credentials=True)
 
 
 # Auto-convert postgres:// to postgresql:// for SQLAlchemy compatibility
@@ -79,7 +79,7 @@ def update_win(username):
     
     return jsonify({'error': 'Player not found'}), 404
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST', 'OPTIONS'])
 def login():
     data = request.json
     username = data.get('username')
@@ -91,7 +91,7 @@ def login():
     else:
         return jsonify({"status": "error", "message": "Invalid credentials"}), 401
 
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['POST', 'OPTIONS'])
 def register():
     data = request.json
     username = data.get('username')
