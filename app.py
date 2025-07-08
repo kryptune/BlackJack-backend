@@ -113,6 +113,10 @@ def register():
     if existing_user:
         return jsonify({"status": "error", "message": "Username already exists"}), 400
 
+    existing_email = Player.query.filter_by(email=email).first()
+    if existing_email:
+        return jsonify({"status": "error", "message": "Email already exists"}), 400
+
     # Hash the password before saving
     hashed_password = generate_password_hash(password)
 
