@@ -4,6 +4,7 @@ from flask_cors import CORS
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 import os
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": ["https://blckjck2.netlify.app"]}})
@@ -25,6 +26,7 @@ class Player(db.Model):
     balance = db.Column(db.Integer, default=1000)
     wins = db.Column(db.Integer, default=0)
     losses = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime)
 
 # Create tables
 with app.app_context():
