@@ -93,13 +93,13 @@ def login():
 
 @app.route('/register', methods=['POST', 'OPTIONS'])
 def register():
+    if request.method == 'OPTIONS':
+        return '', 204  # ✅ Return empty 204 for preflight request
+    
     data = request.json
     username = data.get('username')
     password = data.get('password')
     email = data.get('email')
-
-    if request.method == 'OPTIONS':
-        return '', 204  # ✅ Return empty 204 for preflight request
 
     if not username or not password or not email:
         return jsonify({"status": "error", "message": "Missing fields"}), 400
